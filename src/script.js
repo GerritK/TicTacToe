@@ -119,9 +119,18 @@ $(document).ready(function () {
                     field = {x: 1, y: 1};
                 } else {
                     fields = getFieldsBySymbol(VOID);
+
+                    for(var i = 0; i < fields.length; i++) {
+                        fields[i].potential = getPotential(fields[i].x, fields[i].y, player);
+                    }
+
+                    fields.sort(function (a, b) {
+                        return b.potential - a.potential;
+                    });
+
                     console.log("FREE::", fields);
 
-                    field = fields[random(0, fields.length)];
+                    field = fields[0];
                 }
             }
         }
@@ -216,6 +225,68 @@ $(document).ready(function () {
         }
         if(playground[0][2] == freeSymbol && playground[1][1] == symbol && playground[2][0] == symbol) {
             result.push({x: 0, y: 2});
+        }
+
+        return result;
+    }
+
+    function getPotential(x, y, symbol) {
+        var result = 0;
+
+        for(var yc = 0; yc < playground[x].length; yc++) {
+            if(y == yc) continue;
+
+            if(playground[x][yc] == symbol) {
+                result += 2;
+            } else if(playground[x][yc] == getOtherPlayer(symbol)) {
+                result -= 1;
+            } else {
+                result += 1;
+            }
+        }
+
+        for(var xc = 0; xc < playground.length; xc++) {
+            if(x == xc) continue;
+
+            if(playground[xc][y] == symbol) {
+                result += 2;
+            } else if(playground[xc][y] == getOtherPlayer(symbol)) {
+                result -= 1;
+            } else {
+                result += 1;
+            }
+        }
+
+        if((x + y) % 2 == 0) {
+            result += 1;
+            
+            if(x == y) {
+                for(var i = 0; i < playground.length; i++) {
+                    if(i == x && i == y) continue;
+
+                    if(playground[i][i] == symbol) {
+                        result += 2;
+                    } else if(playground[i][i] == getOtherPlayer(symbol)) {
+                        result -= 1;
+                    } else {
+                        result += 1;
+                    }
+                }
+            }
+
+            if(x != y || (x == 1 && y == 1)) {
+                for(i = 0; i < playground.length; i++) {
+                    if(i == x && 2 - i == y) continue;
+
+                    if(playground[i][2 - i] == symbol) {
+                        result += 2;
+                    } else if(playground[i][2 - i] == getOtherPlayer(symbol)) {
+                        result -= 1;
+                    } else {
+                        result += 1;
+                    }
+                }
+            }
         }
 
         return result;
