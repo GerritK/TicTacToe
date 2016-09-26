@@ -114,24 +114,19 @@ $(document).ready(function () {
             if(fields.length > 0) {
                 field = fields[random(0, fields.length)];
             } else {
-                if(playground[1][1] == VOID) {
-                    console.log("FREE CENTER!");
-                    field = {x: 1, y: 1};
-                } else {
-                    fields = getFieldsBySymbol(VOID);
+                fields = getFieldsBySymbol(VOID);
 
-                    for(var i = 0; i < fields.length; i++) {
-                        fields[i].potential = getPotential(fields[i].x, fields[i].y, player);
-                    }
-
-                    fields.sort(function (a, b) {
-                        return b.potential - a.potential;
-                    });
-
-                    console.log("FREE::", fields);
-
-                    field = fields[0];
+                for(var i = 0; i < fields.length; i++) {
+                    fields[i].potential = getPotential(fields[i].x, fields[i].y, player);
                 }
+
+                fields.sort(function (a, b) {
+                    return b.potential - a.potential;
+                });
+
+                console.log("FREE::", fields);
+
+                field = fields[0];
             }
         }
 
@@ -259,7 +254,7 @@ $(document).ready(function () {
 
         if((x + y) % 2 == 0) {
             result += 1;
-            
+
             if(x == y) {
                 for(var i = 0; i < playground.length; i++) {
                     if(i == x && i == y) continue;
